@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aplikasi Kesehatan Feedlot - Treatment, Moving, Obat, Pen Trial">
+    <meta name="theme-color" content="#6366f1">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
+    <title>Kesehatan Feedlot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="logo">
+                <span class="logo-icon">🏥</span>
+                <h1>KESEHATAN FEEDLOT</h1>
+            </div>
+            <div class="header-actions">
+                <span class="user-badge" id="userInfo"></span>
+                <button class="btn-login" id="loginBtn" onclick="showLoginPage()">🔐 Login</button>
+                <button class="btn-login" id="logoutBtn" style="display:none" onclick="logout()">🚪 Logout</button>
+            </div>
+        </div>
+        <nav class="nav-menu">
+            <button class="nav-btn active" data-module="dashboard">
+                <span class="nav-icon">📊</span><span>Dashboard</span>
+            </button>
+            <button class="nav-btn" data-module="treatment">
+                <span class="nav-icon">💉</span><span>Treatment</span>
+            </button>
+            <button class="nav-btn" data-module="moving">
+                <span class="nav-icon">🚚</span><span>Moving</span>
+            </button>
+            <button class="nav-btn" data-module="pengambilanObat">
+                <span class="nav-icon">💊</span><span>Ambil Obat</span>
+            </button>
+            <button class="nav-btn" data-module="penambahanObat">
+                <span class="nav-icon">📦</span><span>Tambah Obat</span>
+            </button>
+            <button class="nav-btn" data-module="penTrial">
+                <span class="nav-icon">🏷️</span><span>Pen Trial</span>
+            </button>
+            <button class="nav-btn" data-module="settings" id="settingsNav">
+                <span class="nav-icon">⚙️</span><span>Settings</span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="main-content">
+
+        <!-- ===== DASHBOARD MODULE ===== -->
+        <section class="module active" id="dashboardModule">
+            <div class="module-header">
+                <h2>📊 Dashboard Kesehatan</h2>
+            </div>
+
+            <!-- Status Sapi -->
+            <div class="dashboard-section">
+                <div class="dashboard-section-header">
+                    <h3>🐄 Status Sapi</h3>
+                </div>
+                <div id="statusSapiContainer"></div>
+            </div>
+
+            <!-- Hospital -->
+            <div class="dashboard-section">
+                <div class="dashboard-section-header">
+                    <h3>🏥 Hospital & Drafting</h3>
+                </div>
+                <div class="hospital-grid" id="hospitalContainer"></div>
+            </div>
+
+            <!-- Stok Obat -->
+            <div class="dashboard-section">
+                <div class="dashboard-section-header">
+                    <h3>💊 Stok Obat</h3>
+                </div>
+                <div id="stokObatContainer"></div>
+            </div>
+
+            <!-- Pen Trial -->
+            <div class="dashboard-section">
+                <div class="dashboard-section-header">
+                    <h3>🏷️ Pen Trial Aktif</h3>
+                </div>
+                <div id="penTrialDashContainer"></div>
+            </div>
+        </section>
+
+        <!-- ===== TREATMENT MODULE ===== -->
+        <section class="module" id="treatmentModule">
+            <div class="module-header">
+                <h2>💉 Data Treatment</h2>
+            </div>
+
+            <div class="form-container">
+                <!-- Basic Info -->
+                <div class="form-section-title">Informasi Dasar</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tanggal Treatment</label>
+                        <input type="date" id="treatTanggal">
+                    </div>
+                    <div class="form-group">
+                        <label>Penanggung Jawab</label>
+                        <div class="select-with-add">
+                            <select id="treatPJ"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('penanggungJawab','treatPJ','Tambah PJ Baru')">+</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Shipment</label>
+                        <div class="select-with-add">
+                            <select id="treatShipment"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('shipments','treatShipment','Tambah Shipment Baru')">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Eartag</label>
+                        <input type="text" id="treatEartag" placeholder="Masukkan eartag">
+                    </div>
+                    <div class="form-group">
+                        <label>Berat (kg)</label>
+                        <input type="number" id="treatBerat" placeholder="Berat sapi" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Jenis Pakan</label>
+                        <div class="select-with-add">
+                            <select id="treatJenisPakan"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('jenisPakan','treatJenisPakan','Tambah Jenis Pakan')">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Treatment Ke</label>
+                        <select id="treatKe">
+                            <option value="">-- Pilih --</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Diagnosa</label>
+                        <div class="select-with-add">
+                            <select id="treatDiagnosa"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('diagnosa','treatDiagnosa','Tambah Diagnosa')">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Pen Asal</label>
+                        <input type="text" id="treatPenAsal" placeholder="Pen asal sapi">
+                    </div>
+                    <div class="form-group">
+                        <label>Pen Akhir</label>
+                        <div class="select-with-add">
+                            <select id="treatPenAkhir"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('penAkhir','treatPenAkhir','Tambah Pen')">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Obat Section -->
+                <div class="form-section-title">💊 Obat Yang Diberikan</div>
+
+                <div class="medicine-row">
+                    <div class="form-group">
+                        <label>Anti Biotik</label>
+                        <div class="select-with-add">
+                            <select id="treatAntibiotic"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('antibiotic','treatAntibiotic','Tambah Anti Biotik')">+</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Dosis</label>
+                        <input type="text" id="treatAntibioticDosis" placeholder="mg/mL">
+                    </div>
+                </div>
+
+                <div class="medicine-row">
+                    <div class="form-group">
+                        <label>Anti Inflamasi</label>
+                        <div class="select-with-add">
+                            <select id="treatAntiInflamasi"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('antiInflamasi','treatAntiInflamasi','Tambah Anti Inflamasi')">+</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Dosis</label>
+                        <input type="text" id="treatAntiInflamasiDosis" placeholder="mg/mL">
+                    </div>
+                </div>
+
+                <div class="medicine-row">
+                    <div class="form-group">
+                        <label>Analgesik</label>
+                        <div class="select-with-add">
+                            <select id="treatAnalgesik"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('analgesik','treatAnalgesik','Tambah Analgesik')">+</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Dosis</label>
+                        <input type="text" id="treatAnalgesikDosis" placeholder="mg/mL">
+                    </div>
+                </div>
+
+                <div class="medicine-row">
+                    <div class="form-group">
+                        <label>Supportive 1</label>
+                        <div class="select-with-add">
+                            <select id="treatSupportive1"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('supportive','treatSupportive1','Tambah Supportive')">+</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Dosis</label>
+                        <input type="text" id="treatSupportive1Dosis" placeholder="mg/mL">
+                    </div>
+                </div>
+
+                <div class="medicine-row">
+                    <div class="form-group">
+                        <label>Supportive 2</label>
+                        <div class="select-with-add">
+                            <select id="treatSupportive2"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('supportive','treatSupportive2','Tambah Supportive')">+</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Dosis</label>
+                        <input type="text" id="treatSupportive2Dosis" placeholder="mg/mL">
+                    </div>
+                </div>
+
+                <div class="medicine-row">
+                    <div class="form-group">
+                        <label>Supportive 3</label>
+                        <div class="select-with-add">
+                            <select id="treatSupportive3"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('supportive','treatSupportive3','Tambah Supportive')">+</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Dosis</label>
+                        <input type="text" id="treatSupportive3Dosis" placeholder="mg/mL">
+                    </div>
+                </div>
+
+                <div class="medicine-row">
+                    <div class="form-group">
+                        <label>Anti Parasitic</label>
+                        <div class="select-with-add">
+                            <select id="treatAntiParasitic"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('antiParasitic','treatAntiParasitic','Tambah Anti Parasitic')">+</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Dosis</label>
+                        <input type="text" id="treatAntiParasiticDosis" placeholder="mg/mL">
+                    </div>
+                </div>
+
+                <div class="medicine-row">
+                    <div class="form-group">
+                        <label>Anti Bloat</label>
+                        <div class="select-with-add">
+                            <select id="treatAntiBloat"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('antiBloat','treatAntiBloat','Tambah Anti Bloat')">+</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Dosis</label>
+                        <input type="text" id="treatAntiBloatDosis" placeholder="mg/mL">
+                    </div>
+                </div>
+
+                <!-- Treatment Lainnya & Foto -->
+                <div class="form-section-title">📝 Lainnya</div>
+                <div class="form-group">
+                    <label>Treatment Lainnya</label>
+                    <textarea id="treatLainnya" placeholder="Catatan treatment tambahan..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Upload Foto Sapi</label>
+                        <div class="photo-upload">
+                            <input type="file" id="treatFoto" accept="image/*" capture="environment">
+                            <div class="photo-preview" id="treatFotoPreview"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 16px; text-align: right;">
+                    <button class="btn btn-primary" onclick="submitTreatment()">
+                        <span>💾</span> SIMPAN TREATMENT
+                    </button>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="table-section">
+                <div class="table-header">
+                    <h3>Data Treatment</h3>
+                    <span class="data-count" id="treatCount">Total: 0 data</span>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>PJ</th>
+                                <th>Shipment</th>
+                                <th>Eartag</th>
+                                <th>Berat</th>
+                                <th>Pakan</th>
+                                <th>Ke</th>
+                                <th>Diagnosa</th>
+                                <th>Pen Asal</th>
+                                <th>Pen Akhir</th>
+                                <th>Foto</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="treatTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="table-actions">
+                    <button class="btn btn-success btn-sm" onclick="exportTreatment()">📊 Export Excel</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== MOVING MODULE ===== -->
+        <section class="module" id="movingModule">
+            <div class="module-header">
+                <h2>🚚 Data Moving</h2>
+            </div>
+
+            <div class="form-container">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tanggal</label>
+                        <input type="date" id="movTanggal">
+                    </div>
+                    <div class="form-group">
+                        <label>Penanggung Jawab</label>
+                        <div class="select-with-add">
+                            <select id="movPJ"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('penanggungJawab','movPJ','Tambah PJ Baru')">+</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Shipment</label>
+                        <div class="select-with-add">
+                            <select id="movShipment"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('shipments','movShipment','Tambah Shipment Baru')">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Eartag</label>
+                        <input type="text" id="movEartag" placeholder="Masukkan eartag">
+                    </div>
+                    <div class="form-group">
+                        <label>Keterangan</label>
+                        <div class="select-with-add">
+                            <select id="movKeterangan"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('keteranganMoving','movKeterangan','Tambah Keterangan')">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Pen Awal</label>
+                        <input type="text" id="movPenAwal" placeholder="Pen awal sapi">
+                    </div>
+                    <div class="form-group">
+                        <label>Pen Akhir</label>
+                        <div class="select-with-add">
+                            <select id="movPenAkhir"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('penAkhir','movPenAkhir','Tambah Pen')">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Upload Foto</label>
+                        <div class="photo-upload">
+                            <input type="file" id="movFoto" accept="image/*" capture="environment">
+                            <div class="photo-preview" id="movFotoPreview"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 16px; text-align: right;">
+                    <button class="btn btn-primary" onclick="submitMoving()">
+                        <span>💾</span> SIMPAN MOVING
+                    </button>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="table-section">
+                <div class="table-header">
+                    <h3>Data Moving</h3>
+                    <span class="data-count" id="movCount">Total: 0 data</span>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>PJ</th>
+                                <th>Shipment</th>
+                                <th>Eartag</th>
+                                <th>Keterangan</th>
+                                <th>Pen Awal</th>
+                                <th>Pen Akhir</th>
+                                <th>Foto</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="movTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="table-actions">
+                    <button class="btn btn-success btn-sm" onclick="exportMoving()">📊 Export Excel</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== PENGAMBILAN OBAT MODULE ===== -->
+        <section class="module" id="pengambilanObatModule">
+            <div class="module-header">
+                <h2>💊 Pengambilan Obat</h2>
+            </div>
+
+            <div class="form-container">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tanggal</label>
+                        <input type="date" id="poTanggal">
+                    </div>
+                    <div class="form-group">
+                        <label>Penanggung Jawab</label>
+                        <div class="select-with-add">
+                            <select id="poPJ"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('penanggungJawab','poPJ','Tambah PJ Baru')">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Obat Yang Diambil</label>
+                        <div class="select-with-add">
+                            <select id="poObat"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('obatList','poObat','Tambah Obat Baru')">+</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Jumlah</label>
+                        <input type="number" id="poJumlah" placeholder="Jumlah obat" min="0" step="1">
+                    </div>
+                </div>
+
+                <div style="margin-top: 16px; text-align: right;">
+                    <button class="btn btn-primary" onclick="submitPengambilanObat()">
+                        <span>💾</span> SIMPAN
+                    </button>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="table-section">
+                <div class="table-header">
+                    <h3>Data Pengambilan Obat</h3>
+                    <span class="data-count" id="poCount">Total: 0 data</span>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>PJ</th>
+                                <th>Obat</th>
+                                <th>Jumlah</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="poTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="table-actions">
+                    <button class="btn btn-success btn-sm" onclick="exportPengambilanObat()">📊 Export Excel</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== PENAMBAHAN OBAT MODULE ===== -->
+        <section class="module" id="penambahanObatModule">
+            <div class="module-header">
+                <h2>📦 Penambahan Obat (Stok Masuk)</h2>
+            </div>
+
+            <div class="form-container">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tanggal Masuk</label>
+                        <input type="date" id="paTanggal">
+                    </div>
+                    <div class="form-group">
+                        <label>Penanggung Jawab</label>
+                        <div class="select-with-add">
+                            <select id="paPJ"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('penanggungJawab','paPJ','Tambah PJ Baru')">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section-title">📋 Daftar Obat Masuk</div>
+                <div class="invoice-container" id="invoiceRows"></div>
+
+                <div style="margin-top: 12px; display: flex; gap: 8px; justify-content: space-between;">
+                    <button class="btn btn-outline btn-sm" onclick="addInvoiceRow()">➕ Tambah Baris</button>
+                    <button class="btn btn-primary" onclick="submitPenambahanObat()">
+                        <span>💾</span> SIMPAN INVOICE
+                    </button>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="table-section">
+                <div class="table-header">
+                    <h3>Riwayat Penambahan Obat</h3>
+                    <span class="data-count" id="paCount">Total: 0 invoice</span>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>PJ</th>
+                                <th>Detail Obat</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="table-actions">
+                    <button class="btn btn-success btn-sm" onclick="exportPenambahanObat()">📊 Export Excel</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== PEN TRIAL MODULE ===== -->
+        <section class="module" id="penTrialModule">
+            <div class="module-header">
+                <h2>🏷️ Input Data Pen Trial</h2>
+            </div>
+
+            <div class="form-container">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tanggal</label>
+                        <input type="date" id="ptTanggal">
+                    </div>
+                    <div class="form-group">
+                        <label>Penanggung Jawab</label>
+                        <div class="select-with-add">
+                            <select id="ptPJ"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('penanggungJawab','ptPJ','Tambah PJ Baru')">+</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Shipment</label>
+                        <div class="select-with-add">
+                            <select id="ptShipment"></select>
+                            <button class="add-btn"
+                                onclick="showAddItemModal('shipments','ptShipment','Tambah Shipment')">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Eartag</label>
+                        <input type="text" id="ptEartag" placeholder="Masukkan eartag">
+                    </div>
+                    <div class="form-group">
+                        <label>Keterangan</label>
+                        <input type="text" id="ptKeterangan" placeholder="Keterangan (opsional)">
+                    </div>
+                </div>
+
+                <div class="form-section-title">🏠 Pilih Pen Trial</div>
+                <div class="pen-trial-groups-container" id="penTrialGroupsContainer"></div>
+
+                <div style="display: flex; gap: 8px; justify-content: space-between; margin-top: 12px;">
+                    <button class="btn btn-outline btn-sm" onclick="addPenTrialGroup()">➕ Tambah Group Baru</button>
+                    <button class="btn btn-primary" onclick="submitPenTrial()">
+                        <span>💾</span> SIMPAN DATA PEN TRIAL
+                    </button>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="table-section">
+                <div class="table-header">
+                    <h3>Data Pen Trial</h3>
+                    <span class="data-count" id="ptCount">Total: 0 data</span>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>PJ</th>
+                                <th>Shipment</th>
+                                <th>Eartag</th>
+                                <th>Group</th>
+                                <th>Pen</th>
+                                <th>Durasi</th>
+                                <th>Keterangan</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ptTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="table-actions">
+                    <button class="btn btn-success btn-sm" onclick="exportPenTrial()">📊 Export Excel</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SETTINGS MODULE ===== -->
+        <section class="module" id="settingsModule">
+            <div class="module-header">
+                <h2>⚙️ Pengaturan</h2>
+            </div>
+
+            <!-- Backup / Import-Export -->
+            <div class="settings-section">
+                <h3>💾 Backup & Restore Data</h3>
+                <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;">
+                    Export seluruh data untuk backup atau import data dari komputer lain.
+                </p>
+                <div class="settings-row">
+                    <button class="btn btn-primary" id="exportExcelAllBtn" onclick="exportAllDataExcel()">📊 Export
+                        Seluruh Data (Excel)</button>
+                    <button class="btn btn-success" id="exportBtn">📥 Export Backup (JSON)</button>
+                    <button class="btn btn-warning" id="importBtn">📤 Import Backup (JSON)</button>
+                    <input type="file" id="importFile" accept=".json" hidden>
+                </div>
+            </div>
+
+            <!-- Supabase Sync -->
+            <div class="settings-section">
+                <h3>☁️ Sinkronisasi Online (Supabase)</h3>
+                <div class="sync-status" id="syncStatus">⚪ Supabase belum dikonfigurasi</div>
+                <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;">
+                    Konfigurasi Supabase URL & Key di file <code>js/supabase-sync.js</code>
+                </p>
+                <div class="settings-row">
+                    <button class="btn btn-primary" id="syncUpBtn">⬆️ Upload ke Supabase</button>
+                    <button class="btn btn-outline" id="syncDownBtn">⬇️ Download dari Supabase</button>
+                </div>
+            </div>
+
+            <!-- User Management -->
+            <div class="settings-section" id="userManagementSection" style="display:none;">
+                <h3>👥 Manajemen User</h3>
+
+                <div class="settings-row" style="align-items: end;">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="newUsername" placeholder="Username baru">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="newPassword" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select id="newRole">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="addUser()">➕ Tambah User</button>
+                </div>
+
+                <div class="table-wrapper" style="margin-top: 16px;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="loginOverlay">
+        <button class="login-close" id="loginClose">✕</button>
+        <div class="login-box">
+            <h2>🔐 Login</h2>
+            <p class="login-subtitle">Masuk untuk mengakses input data</p>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="loginUsername" placeholder="Masukkan username" autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Masukkan password"
+                        autocomplete="current-password">
+                </div>
+                <p class="login-error" id="loginError"></p>
+                <button type="submit" class="btn btn-primary">Masuk</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Photo Modal -->
+    <div class="photo-modal" id="photoModal" onclick="closePhotoModal()">
+        <img id="photoModalImg" src="" alt="Foto Sapi">
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/supabase-sync.js"></script>
+    <script src="js/treatment.js"></script>
+    <script src="js/moving.js"></script>
+    <script src="js/pengambilan-obat.js"></script>
+    <script src="js/penambahan-obat.js"></script>
+    <script src="js/pen-trial.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

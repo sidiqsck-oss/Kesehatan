@@ -1,0 +1,11 @@
+{
+    "name": "kesehatan-pwa",
+    "version": "1.0.0",
+    "description": "Cattle Management PWA",
+    "scripts": {
+        "start": "npx http-server -c-1 -a localhost -p 8080 -o"
+    },
+    "devDependencies": {
+        "http-server": "^14.1.1"
+    }
+}
